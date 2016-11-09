@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">HyperGarageSale</string>
+    <string name="title_hint">Enter title of the item</string>
+    <string name="price_hint">Enter price</string>
+    <string name="desc_hint">Enter description of the item</string>
+    <string name="button_post">Post</string>
+    <string name="new_post_snackbar">Thanks for posting!</string>
+    <string name="title_activity_browse_posts">BrowsePostsActivity</string>
+    <string name="add_new_picture">Add Picture</string>
+
+    <string name="picture">Picture</string>
+    <string name="description_info">Info</string>
+    <string name="request_permission">This app needs camera permission.</string>
+</resources>
