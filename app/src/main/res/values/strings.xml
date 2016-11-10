@@ -11,4 +11,6 @@
     <string name="picture">Picture</string>
     <string name="description_info">Info</string>
     <string name="request_permission">This app needs camera permission.</string>
+    <string name="pick_picture_camera">take camera</string>
+    <string name="pick_picture_gallery">picture gallery</string>
 </resources>

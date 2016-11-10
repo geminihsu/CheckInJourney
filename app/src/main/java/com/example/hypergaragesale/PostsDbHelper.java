@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class PostsDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Posts.db";
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
@@ -18,6 +18,7 @@ public class PostsDbHelper extends SQLiteOpenHelper {
                     Posts.PostEntry._ID + " INTEGER PRIMARY KEY," +
                     Posts.PostEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
                     Posts.PostEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+                    Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT + TEXT_TYPE + COMMA_SEP +
                     Posts.PostEntry.COLUMN_NAME_PRICE + TEXT_TYPE +
             " )";
 
