@@ -1,11 +1,15 @@
 package com.example.hypergaragesale;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +17,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+
+import java.io.File;
 import java.util.ArrayList;
+
+import static com.example.util.Utils.decodeSampledBitmapFromResource;
 
 
 public class BrowsePostsActivity extends AppCompatActivity {
@@ -50,7 +58,7 @@ public class BrowsePostsActivity extends AppCompatActivity {
 
         mAdapter = new PostsAdapter(getDataSet());
         mRecyclerView.setAdapter(mAdapter);
-
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,19 +100,30 @@ public class BrowsePostsActivity extends AppCompatActivity {
                 null,                                     // don't filter by row groups
                 sortOrder                                 // The sort order
         );
-
+        Bitmap pic = BitmapFactory.decodeResource(getResources(),
+                R.mipmap.ic_launcher);
         ArrayList<BrowsePosts> browsePosts = new ArrayList<BrowsePosts>();
+        int i=1;
         if (cursor.moveToFirst()) {
             do {
-                browsePosts.add(new BrowsePosts(
+                BrowsePosts post = new BrowsePosts(String.valueOf(i+"."),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_TITLE)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PRICE)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_DESCRIPTION)),
-                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT))));
+                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT)));
+                String path= cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT));
+
+                pic=decodeSampledBitmapFromResource(path,300, 500);
+                post.mBitmap = pic;
+                browsePosts.add(post);
+                i++;
             } while (cursor.moveToNext());
         }
 
         return browsePosts;
     }
+
+
+
 
 }

@@ -4,6 +4,7 @@ package com.example.hypergaragesale;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -31,6 +33,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.database.ItemProvider;
+import com.example.util.RealPathUtil;
+import com.example.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +55,9 @@ public class NewPostActivity extends AppCompatActivity {
     private Button upload;
     private ImageView image;
     private String imageContentURI;
+
+    private int scaleWidth;
+    private int scaleHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,6 +184,14 @@ public class NewPostActivity extends AppCompatActivity {
         startActivity(new Intent(this, BrowsePostsActivity.class));
     }
 
+    @Override
+    //Get the size of the Image view after the
+    //Activity has completely loaded
+    public void onWindowFocusChanged(boolean hasFocus){
+        super.onWindowFocusChanged(hasFocus);
+        scaleWidth=image.getWidth();
+        scaleHeight=image.getHeight();
+    }
 
     public void onClickRetrieveStudents(View view) {
         // Retrieve student records
@@ -222,26 +237,45 @@ public class NewPostActivity extends AppCompatActivity {
                 String path=data.getStringExtra("image");
                 File imgFile = new File(path);
                 if(imgFile.exists()){
-                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    Bitmap myBitmap = Utils.decodeSampledBitmapFromResource(path,scaleWidth,scaleHeight);
                     //ImageView myImage = (ImageView) findViewById(R.id.imageviewTest);
+                    imageContentURI =path;
                     image.setImageBitmap(myBitmap);
                 }
                 break;
             case PICK_IMAGE_REQUEST:
+                String realPath;
+                // SDK < API11
+                if (Build.VERSION.SDK_INT < 11)
+                    realPath = RealPathUtil.getRealPathFromURI_BelowAPI11(this, data.getData());
+
+                    // SDK >= 11 && SDK < 19
+                else if (Build.VERSION.SDK_INT < 19)
+                    realPath = RealPathUtil.getRealPathFromURI_API11to18(this, data.getData());
+
+                    // SDK > 19 (Android 4.4)
+                else
+                    realPath = RealPathUtil.getRealPathFromURI_API19(this, data.getData());
+
                 Uri uri = data.getData();
 
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    bitmap = Utils.decodeSampledBitmapFromResource(realPath,scaleWidth,scaleHeight);
                     // Log.d(TAG, String.valueOf(bitmap));
 
                     //ImageView imageView = (ImageView) findViewById(R.id.imageView);
                     Log.e(TAG,uri.toString());
-                    imageContentURI = uri.toString();
+                    imageContentURI =realPath;
                     image.setImageBitmap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
         }
+
+
     }
+
+
 }
