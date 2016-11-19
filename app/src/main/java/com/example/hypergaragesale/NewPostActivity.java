@@ -2,15 +2,12 @@ package com.example.hypergaragesale;
 
 
 import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -20,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -127,6 +123,7 @@ public class NewPostActivity extends AppCompatActivity {
                         android.R.layout.select_dialog_item);
                 arrayAdapter.add(getString(R.string.pick_picture_camera));
                 arrayAdapter.add(getString(R.string.pick_picture_gallery));
+                //arrayAdapter.add("YouTube");
 
                 builderSingle.setAdapter(
                         arrayAdapter,
@@ -134,7 +131,6 @@ public class NewPostActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String strName = arrayAdapter.getItem(which);
-
                                 switch (which){
                                     case 0:
                                         Intent intent = new Intent(NewPostActivity.this, CameraActivity.class);
@@ -148,6 +144,10 @@ public class NewPostActivity extends AppCompatActivity {
                                         // Always show the chooser (if there are multiple options available)
                                         startActivityForResult(Intent.createChooser(gallery, "Select Picture"), PICK_IMAGE_REQUEST);
                                         break;
+                                 /*   case 2:
+                                        Intent question = new Intent(NewPostActivity.this, YoutubeActivity.class);
+                                        startActivity(question);
+                                        break;*/
                                 }
                             }
                         });
@@ -181,7 +181,10 @@ public class NewPostActivity extends AppCompatActivity {
         Uri uri = getContentResolver().insert(
                 ItemProvider.CONTENT_URI, values);
 */
-        startActivity(new Intent(this, BrowsePostsActivity.class));
+        //startActivity(new Intent(this, BrowsePostsActivity.class));
+        Intent question = new Intent(NewPostActivity.this, BrowsePostsActivity.class);
+        startActivity(question);
+        finish();
     }
 
     @Override
@@ -193,25 +196,7 @@ public class NewPostActivity extends AppCompatActivity {
         scaleHeight=image.getHeight();
     }
 
-    public void onClickRetrieveStudents(View view) {
-        // Retrieve student records
-        String URL = "content://com.example.hypergaragesale.ItemsProvider";
 
-        Uri students = Uri.parse(URL);
-        Cursor c = managedQuery(students, null, null, null, "name");
-
-        if (c.moveToFirst()) {
-            do{
-                Toast.makeText(this,
-                        c.getString(c.getColumnIndex(ItemProvider._ID)) +
-                                ", " +  c.getString(c.getColumnIndex( ItemProvider.TITLE)) +
-                                ", " +  c.getString(c.getColumnIndex( ItemProvider.PRICE)) +
-                                ", " +  c.getString(c.getColumnIndex( ItemProvider.DESCRIPTION)) +
-                                ", " + c.getString(c.getColumnIndex( ItemProvider.IMAGE_CONTENT)),
-                        Toast.LENGTH_SHORT).show();
-            } while (c.moveToNext());
-        }
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

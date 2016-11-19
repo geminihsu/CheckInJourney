@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.hypergaragesale">
+
     <!-- Min/target SDK versions (<uses-sdk>) managed by build.gradle -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- A camera with RAW capability is required to use this application -->
     <uses-feature android:name="android.hardware.camera" />
@@ -16,20 +18,30 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".NewPostActivity"
-            android:parentActivityName=".BrowsePostsActivity">
-        </activity>
+        <activity
+            android:name=".NewPostActivity"
+            android:parentActivityName=".BrowsePostsActivity" />
         <activity
             android:name=".BrowsePostsActivity"
-            android:label="@string/title_activity_browse_posts" >
+            android:label="@string/title_activity_browse_posts">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CameraActivity"
-            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name=".CameraActivity"
+            android:configChanges="orientation|screenSize" />
+        <!--<activity-->
+            <!--android:name=".YoutubeActivity"-->
+            <!--android:configChanges="orientation|screenSize" />-->
+        <!--&gt;-->
 
+        <activity
+            android:name=".PostInfoActivity"
+            android:configChanges="orientation|screenSize" />
+        >
     </application>
 
 </manifest>

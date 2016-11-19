@@ -13,4 +13,6 @@
     <string name="request_permission">This app needs camera permission.</string>
     <string name="pick_picture_camera">take camera</string>
     <string name="pick_picture_gallery">picture gallery</string>
+    <string name="title_activity_video">Video</string>
+    <string name="title_activity_youtube">YoutubeActivity</string>
 </resources>

@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,12 +25,13 @@ import java.util.ArrayList;
 import static com.example.util.Utils.decodeSampledBitmapFromResource;
 
 
-public class BrowsePostsActivity extends AppCompatActivity {
+public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapter.OnItemClickListener {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private ArrayList<BrowsePosts> data = new ArrayList<BrowsePosts>();
     private SQLiteDatabase db;
 
     @Override
@@ -40,6 +42,7 @@ public class BrowsePostsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#ffFEBB31"));
         toolbar.setBackgroundDrawable(colorDrawable);
+
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.posts_recycler_view);
@@ -55,8 +58,8 @@ public class BrowsePostsActivity extends AppCompatActivity {
         // specify an adapter (see also next example)
         PostsDbHelper mDbHelper = new PostsDbHelper(this);
         db = mDbHelper.getReadableDatabase();
-
-        mAdapter = new PostsAdapter(getDataSet());
+        data = getDataSet();
+        mAdapter = new PostsAdapter(data,this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -65,9 +68,30 @@ public class BrowsePostsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                startActivity(new Intent(getApplicationContext(), NewPostActivity.class));
+               // startActivity(new Intent(getApplicationContext(), NewPostActivity.class));
+                Intent question = new Intent(BrowsePostsActivity.this, NewPostActivity.class);
+                startActivity(question);
+                finish();
             }
         });
+
+        mRecyclerView.setAdapter(new PostsAdapter(getDataSet(), new PostsAdapter.OnItemClickListener() {
+            @Override public void onItemClick(BrowsePosts item) {
+                //zToast.makeText(BrowsePostsActivity.this, item.mTitle, Toast.LENGTH_LONG).show();
+
+                Intent question = new Intent(BrowsePostsActivity.this, PostInfoActivity.class);
+                Bundle b = new Bundle();
+                //b.putSerializable(PostInfoActivity.ARG_POST_DATA,item);
+                b.putString(PostInfoActivity.ARG_POST_TITLE,item.mTitle);
+                b.putString(PostInfoActivity.ARG_POST_PRICE,item.mPrice);
+                b.putString(PostInfoActivity.ARG_POST_DESCRIPTION,item.mDescription);
+                b.putString(PostInfoActivity.ARG_POST_IMAGE_PATH,item.mPictureContent);
+                question.putExtras(b);
+                startActivity(question);
+
+            }
+        }));
+
     }
 
     @Override
@@ -113,7 +137,7 @@ public class BrowsePostsActivity extends AppCompatActivity {
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT)));
                 String path= cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT));
 
-                pic=decodeSampledBitmapFromResource(path,300, 500);
+                pic=decodeSampledBitmapFromResource(path,100, 100);
                 post.mBitmap = pic;
                 browsePosts.add(post);
                 i++;
@@ -124,6 +148,8 @@ public class BrowsePostsActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onItemClick(BrowsePosts item) {
 
-
+    }
 }
