@@ -32,36 +32,89 @@
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/title_txt"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:paddingTop="@dimen/activity_vertical_margin"
+               />
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/title_hint"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:id="@+id/textView_title" />
-
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/price_txt"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:paddingTop="@dimen/activity_vertical_margin"
+         />
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/price_hint"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:id="@+id/textView_price" />
-
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/desc_txt"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:paddingTop="@dimen/activity_vertical_margin"
+          />
         <TextView
             android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="top"
-            android:paddingTop="@dimen/activity_vertical_margin"
+            android:layout_height="wrap_content"
             android:hint="@string/desc_hint"
             android:id="@+id/textView_desc"
             />
+        </LinearLayout>
        <LinearLayout
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:orientation="vertical"
            >
-       <ImageView
+           <LinearLayout
+               android:id="@+id/camera1"
+               android:layout_width="match_parent"
+               android:layout_height="250dp"
+               android:orientation="vertical"
+               android:gravity="center_horizontal"
+               android:layout_marginTop="20dp"
+               android:layout_marginLeft="20dp"
+               android:layout_marginRight="20dp"
+               >
+               <com.google.android.gms.maps.MapView
+                   android:id="@+id/fragment_embedded_map_view_mapview"
+                   android:layout_width="match_parent"
+                   android:layout_height="0dp"
+                   android:layout_weight="1"/>
+
+           </LinearLayout>
+           <ImageView
                android:id="@+id/image"
                android:layout_width="300dp"
                android:layout_height="400dp"

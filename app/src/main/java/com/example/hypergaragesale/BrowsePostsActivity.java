@@ -86,6 +86,7 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
                 b.putString(PostInfoActivity.ARG_POST_PRICE,item.mPrice);
                 b.putString(PostInfoActivity.ARG_POST_DESCRIPTION,item.mDescription);
                 b.putString(PostInfoActivity.ARG_POST_IMAGE_PATH,item.mPictureContent);
+                b.putString(PostInfoActivity.ARG_POST_LOCATION,item.mAddress);
                 question.putExtras(b);
                 startActivity(question);
 

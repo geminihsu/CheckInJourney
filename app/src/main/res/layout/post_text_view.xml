@@ -53,16 +53,7 @@
         android:textColor="@color/black"
         android:text="124"
         android:id="@+id/titleView" />
-    <RatingBar
-        android:id="@+id/ratingbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:paddingLeft="5dp"
-        style="?android:attr/ratingBarStyleSmall"
-        android:rating="3"
-        >
-    </RatingBar>
+
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
@@ -78,6 +69,17 @@
         android:id="@+id/detail" />
     </LinearLayout>
     </LinearLayout>
+    <RatingBar
+        android:id="@+id/ratingbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="5dp"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_alignParentRight="true"
+        android:rating="3"
+        >
+    </RatingBar>
     <TextView
         android:id="@+id/address"
         android:layout_width="wrap_content"

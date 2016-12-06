@@ -15,4 +15,8 @@
     <string name="pick_picture_gallery">picture gallery</string>
     <string name="title_activity_video">Video</string>
     <string name="title_activity_youtube">YoutubeActivity</string>
+    <string name="title_txt">Item Title : </string>
+    <string name="price_txt">Item Price : </string>
+    <string name="desc_txt">Item Description : </string>
+
 </resources>
