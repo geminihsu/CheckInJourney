@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/information"
+        android:layout_alignParentLeft="@+id/map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/check"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,19 +40,80 @@
         android:paddingLeft="10dp"
         android:orientation="vertical"
     >
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="124"
         android:id="@+id/titleView" />
-
+    <RatingBar
+        android:id="@+id/ratingbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="5dp"
+        style="?android:attr/ratingBarStyleSmall"
+        android:rating="3"
+        >
+    </RatingBar>
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:text="124"
         android:id="@+id/priceView" />
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/detail" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="124"
+        android:id="@+id/detail" />
     </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1123"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:textStyle="bold"
+        android:paddingRight="10dp"
+        android:textColor="@color/colorAccent"
+        />
+    <!--
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical|right"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:paddingRight="20dp"
+        >
+    <ImageButton
+            android:id="@+id/edit"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/transparent"
+            android:src="@mipmap/ic_content_create"
+        />
+    <ImageButton
+        android:id="@+id/map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:src="@mipmap/ic_maps_place"
+        /> !
+
+    </LinearLayout> -->
+</RelativeLayout>

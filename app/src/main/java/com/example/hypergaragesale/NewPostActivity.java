@@ -1,11 +1,13 @@
 package com.example.hypergaragesale;
 
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -25,11 +27,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.example.database.ItemProvider;
-import com.example.util.RealPathUtil;
+import com.example.util.URICovertStringPathUtil;
 import com.example.util.Utils;
 
 import java.io.File;
@@ -40,6 +41,16 @@ public class NewPostActivity extends AppCompatActivity {
     private String TAG = NewPostActivity.class.toString();
     private static final int CAMERA=1;
     private static final int PICK_IMAGE_REQUEST = 2;
+    public static final int QUERY_GPS = 3;
+
+    private static final String[] INITIAL_PERMS={
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
+    };
+    private static final int INITIAL_REQUEST=1337;
+
+    public static final String BUNDLE_LOCATION = "map";
+
 
     private SQLiteDatabase db;
     private ContentValues values;
@@ -47,6 +58,7 @@ public class NewPostActivity extends AppCompatActivity {
     private EditText titleText;
     private EditText descText;
     private EditText priceText;
+    private EditText location;
 
     private Button upload;
     private ImageView image;
@@ -54,6 +66,9 @@ public class NewPostActivity extends AppCompatActivity {
 
     private int scaleWidth;
     private int scaleHeight;
+
+    private ImageButton map;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,13 +119,13 @@ public class NewPostActivity extends AppCompatActivity {
         descText = (EditText)findViewById(R.id.textView_desc);
         priceText = (EditText)findViewById(R.id.textView_price);
         upload = (Button) findViewById(R.id.upload);
+        location = (EditText) findViewById(R.id.location);
 
         image = (ImageView) findViewById(R.id.image);
-
+        map = (ImageButton) findViewById(R.id.map);
 
     }
-    private void setLister()
-    {
+    private void setLister() {
         upload.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -128,15 +143,46 @@ public class NewPostActivity extends AppCompatActivity {
                 builderSingle.setAdapter(
                         arrayAdapter,
                         new DialogInterface.OnClickListener() {
+                            @TargetApi(Build.VERSION_CODES.M)
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String strName = arrayAdapter.getItem(which);
-                                switch (which){
+                                switch (which) {
                                     case 0:
+                                        if(checkSelfPermission(Manifest.permission.CAMERA)
+                                                != PackageManager.PERMISSION_GRANTED) {
+
+                                            // Should we show an explanation?
+                                            if (shouldShowRequestPermissionRationale(
+                                                    Manifest.permission.CAMERA)) {
+                                                // Explain to the user why we need to read the contacts
+                                            }
+
+                                            requestPermissions(INITIAL_PERMS,
+                                                    INITIAL_REQUEST);
+
+                                            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+                                            // app-defined int constant
+                                        }
                                         Intent intent = new Intent(NewPostActivity.this, CameraActivity.class);
                                         startActivityForResult(intent, CAMERA);
                                         break;
                                     case 1:
+                                        if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                                != PackageManager.PERMISSION_GRANTED) {
+
+                                            // Should we show an explanation?
+                                            if (shouldShowRequestPermissionRationale(
+                                                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                                                // Explain to the user why we need to read the contacts
+                                            }
+
+                                            requestPermissions(INITIAL_PERMS,
+                                                    INITIAL_REQUEST);
+
+                                            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+                                            // app-defined int constant
+                                        }
                                         Intent gallery = new Intent();
                                         // Show only images, no videos or anything else
                                         gallery.setType("image/*");
@@ -154,6 +200,17 @@ public class NewPostActivity extends AppCompatActivity {
                 builderSingle.show();
             }
         });
+
+        map.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Intent map = new Intent(NewPostActivity.this, MapsActivity.class);
+                startActivityForResult(map,QUERY_GPS);
+
+            }
+        });
     }
     private void addPost() {
         // Create a new map of values, where column names are the keys
@@ -162,6 +219,7 @@ public class NewPostActivity extends AppCompatActivity {
         values.put(Posts.PostEntry.COLUMN_NAME_DESCRIPTION, descText.getText().toString());
         values.put(Posts.PostEntry.COLUMN_NAME_PRICE, priceText.getText().toString());
         values.put(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT, imageContentURI);
+        values.put(Posts.PostEntry.COLUMN_NAME_LOCATION, location.getText().toString());
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId;
@@ -213,6 +271,7 @@ public class NewPostActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -230,17 +289,34 @@ public class NewPostActivity extends AppCompatActivity {
                 break;
             case PICK_IMAGE_REQUEST:
                 String realPath;
+                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    // Should we show an explanation?
+                    if (shouldShowRequestPermissionRationale(
+                            Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        // Explain to the user why we need to read the contacts
+                    }
+
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            PICK_IMAGE_REQUEST);
+
+                    // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+                    // app-defined int constant
+
+                    return;
+                }
                 // SDK < API11
                 if (Build.VERSION.SDK_INT < 11)
-                    realPath = RealPathUtil.getRealPathFromURI_BelowAPI11(this, data.getData());
+                    realPath = URICovertStringPathUtil.getRealPathFromURI_BelowAPI11(this, data.getData());
 
                     // SDK >= 11 && SDK < 19
                 else if (Build.VERSION.SDK_INT < 19)
-                    realPath = RealPathUtil.getRealPathFromURI_API11to18(this, data.getData());
+                    realPath = URICovertStringPathUtil.getRealPathFromURI_API11to18(this, data.getData());
 
                     // SDK > 19 (Android 4.4)
                 else
-                    realPath = RealPathUtil.getRealPathFromURI_API19(this, data.getData());
+                    realPath = URICovertStringPathUtil.getRealPathFromURI_API19(this, data.getData());
 
                 Uri uri = data.getData();
 
@@ -257,6 +333,13 @@ public class NewPostActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 break;
+            case QUERY_GPS:
+                String locationInfo="";
+                if(data!=null) {
+                    locationInfo = data.getStringExtra(BUNDLE_LOCATION);
+                    location.setText(locationInfo);
+                }
+
         }
 
 

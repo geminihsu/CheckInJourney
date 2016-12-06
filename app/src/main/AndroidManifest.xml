@@ -12,6 +12,9 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.raw" />
 
+    <!-- Google map -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -42,6 +45,16 @@
             android:name=".PostInfoActivity"
             android:configChanges="orientation|screenSize" />
         >
+
+        <activity
+            android:name=".MapsActivity"
+            android:configChanges="orientation|screenSize" />
+        >
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+
     </application>
 
 </manifest>

@@ -4,13 +4,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
+
 
 /**
  * Created by Taral on 3/11/2016.
@@ -33,6 +33,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public TextView mTitle;
         public TextView mPrice;
         public TextView mDetail;
+        public TextView mAddress;
+        public CheckBox mCheck;
         public ViewHolder(View view) {
             super(view);
             picture = (ImageView) itemView.findViewById(R.id.imageView);
@@ -40,6 +42,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             mTitle = (TextView) itemView.findViewById(R.id.titleView);
             mPrice = (TextView) itemView.findViewById(R.id.priceView);
             mDetail = (TextView) itemView.findViewById(R.id.detail);
+            mAddress = (TextView) itemView.findViewById(R.id.address);
+            mCheck = (CheckBox) itemView.findViewById(R.id.check);
             // Implement view click Listener when make each row of RecycleView clickable
 
         }
@@ -51,6 +55,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                }
            });
        }
+
+
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -85,6 +91,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         holder.mTitle.setText(mDataset.get(position).mTitle);
         holder.mPrice.setText(mDataset.get(position).mPrice);
         holder.mDetail.setText(mDataset.get(position).mDescription);
+        holder.mAddress.setText(mDataset.get(position).mAddress);
+        holder.mCheck.setVisibility(mDataset.get(position).checkBox_visibility);
 
       /*  final BrowsePosts element = mDataset.get(position);
 

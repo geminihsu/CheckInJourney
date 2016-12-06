@@ -17,6 +17,7 @@ public class Posts {
         public static final String COLUMN_NAME_PRICE = "price";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_PICTURE_CONTENT = "picture";
+        public static final String COLUMN_NAME_LOCATION = "location";
 
     }
 }

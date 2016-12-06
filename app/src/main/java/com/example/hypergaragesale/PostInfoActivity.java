@@ -1,42 +1,18 @@
 package com.example.hypergaragesale;
 
 
-import android.app.AlertDialog;
-import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.database.ItemProvider;
-import com.example.util.RealPathUtil;
 import com.example.util.Utils;
-
-import java.io.File;
-import java.io.IOException;
-
-import static com.example.util.Utils.decodeSampledBitmapFromResource;
 
 
 public class PostInfoActivity extends AppCompatActivity {

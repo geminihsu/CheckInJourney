@@ -12,7 +12,7 @@ package com.example.util;
     import android.provider.DocumentsContract;
     import android.provider.MediaStore;
 
-    public class RealPathUtil {
+    public class URICovertStringPathUtil {
 
         @SuppressLint("NewApi")
         public static String getRealPathFromURI_API19(Context context, Uri uri){

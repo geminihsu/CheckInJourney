@@ -1,6 +1,7 @@
 package com.example.hypergaragesale;
 
 import android.graphics.Bitmap;
+import android.widget.CheckBox;
 
 import java.io.Serializable;
 
@@ -14,14 +15,18 @@ public class BrowsePosts implements Cloneable ,Serializable {
     public String mPrice;
     public String mDescription;
     public String mPictureContent;
+    public String mAddress;
     public Bitmap mBitmap;
+    public Integer checkBox_visibility;
 
-    public BrowsePosts (String mNumber,String title, String price, String description, String image_content) {
+    public BrowsePosts (String mNumber,String title, String price, String description,String address, String image_content,Integer ischeck) {
         this.mNumber = mNumber;
         this.mTitle = title;
         this.mPrice = price;
         this.mDescription = description;
         this.mPictureContent = image_content;
+        this.mAddress = address;
+        this.checkBox_visibility = ischeck;
     }
 
     public BrowsePosts clone()  {

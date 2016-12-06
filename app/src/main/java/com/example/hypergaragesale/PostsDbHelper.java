@@ -19,7 +19,8 @@ public class PostsDbHelper extends SQLiteOpenHelper {
                     Posts.PostEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
                     Posts.PostEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                     Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT + TEXT_TYPE + COMMA_SEP +
-                    Posts.PostEntry.COLUMN_NAME_PRICE + TEXT_TYPE +
+                    Posts.PostEntry.COLUMN_NAME_PRICE + TEXT_TYPE + COMMA_SEP +
+                    Posts.PostEntry.COLUMN_NAME_LOCATION + TEXT_TYPE +
             " )";
 
     private static final String SQL_DELETE_ENTRIES =

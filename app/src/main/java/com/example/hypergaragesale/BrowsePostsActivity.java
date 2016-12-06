@@ -109,6 +109,7 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
                 Posts.PostEntry.COLUMN_NAME_PRICE,
                 Posts.PostEntry.COLUMN_NAME_DESCRIPTION,
                 Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT,
+                Posts.PostEntry.COLUMN_NAME_LOCATION
         };
 
         // How you want the results sorted in the resulting Cursor
@@ -134,7 +135,8 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_TITLE)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PRICE)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_DESCRIPTION)),
-                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT)));
+                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_LOCATION)),
+                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT)),View.GONE);
                 String path= cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT));
 
                 pic=decodeSampledBitmapFromResource(path,100, 100);
