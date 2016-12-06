@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:text="1123"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
         android:textStyle="bold"
         android:paddingRight="10dp"
         android:textColor="@color/colorAccent"

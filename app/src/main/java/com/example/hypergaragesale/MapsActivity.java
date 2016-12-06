@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +19,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.service.GPS_Service;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -28,6 +29,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
@@ -57,11 +63,8 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        if(!runtime_permissions())
-        {
-            Intent i =new Intent(getApplicationContext(),GPS_Service.class);
-            startService(i);
-        }
+
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -80,7 +83,10 @@ public class MapsActivity extends FragmentActivity implements
         buttonSave.setOnClickListener(this);
         buttonCurrent.setOnClickListener(this);
         buttonView.setOnClickListener(this);
-
+        if(!runtime_permissions())
+        {
+            getCurrentLocation();
+        }
     }
 
     @Override
@@ -97,6 +103,7 @@ public class MapsActivity extends FragmentActivity implements
 
     //Getting current location
     private void getCurrentLocation() {
+        if(mMap!=null)
         mMap.clear();
         //Creating a location object
         Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
@@ -142,7 +149,21 @@ public class MapsActivity extends FragmentActivity implements
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
         //Displaying current coordinates in toast
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        List<Address> addresses = null;
+
+        Geocoder gc = new Geocoder(this, Locale.getDefault());
+        try {
+            addresses = gc.getFromLocation(latitude, longitude, 10);
+        } catch (IOException e) {}
+
+
+        Toast.makeText(this, addresses.get(0).getAddressLine(0), Toast.LENGTH_LONG).show();
+
+        Intent i=new Intent();
+        Bundle b=new Bundle();
+        b.putSerializable(NewPostActivity.BUNDLE_LOCATION, (ArrayList<Address>)addresses);
+        i.putExtras(b);
+        setResult(NewPostActivity.QUERY_GPS,i);
     }
 
     @Override

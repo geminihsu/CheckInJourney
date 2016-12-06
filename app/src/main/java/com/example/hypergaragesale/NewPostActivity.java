@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -35,6 +36,8 @@ import com.example.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class NewPostActivity extends AppCompatActivity {
@@ -334,15 +337,55 @@ public class NewPostActivity extends AppCompatActivity {
                 }
                 break;
             case QUERY_GPS:
-                String locationInfo="";
+                ArrayList<Address> locationInfo=null;
                 if(data!=null) {
-                    locationInfo = data.getStringExtra(BUNDLE_LOCATION);
-                    location.setText(locationInfo);
+                    locationInfo =(ArrayList<Address>) data.getSerializableExtra(BUNDLE_LOCATION);
+                    //location.setText(locationInfo.get(0).getAddressLine(0));
+                    showAddressList(locationInfo);
                 }
 
         }
 
 
+    }
+
+    private void showAddressList(ArrayList<Address> address)
+    {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(NewPostActivity.this);
+        builderSingle.setTitle("You address:");
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                NewPostActivity.this,
+                android.R.layout.select_dialog_item);
+
+
+        for(int i=  0 ;i<address.size();i++)
+        {
+            Address _address = address.get(i);
+            for(int j = 0 ;j<_address.getMaxAddressLineIndex();j++)
+            arrayAdapter.add(_address.getAddressLine(j));
+        }
+        builderSingle.setNegativeButton(
+                "cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(
+                arrayAdapter,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String strName = arrayAdapter.getItem(which);
+                        AlertDialog.Builder builderInner = new AlertDialog.Builder(
+                                NewPostActivity.this);
+                         location.setText(strName);
+                    }
+                });
+        builderSingle.show();
     }
 
 
