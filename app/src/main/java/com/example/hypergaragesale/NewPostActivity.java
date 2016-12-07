@@ -25,11 +25,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.util.URICovertStringPathUtil;
 import com.example.util.Utils;
@@ -65,7 +67,7 @@ public class NewPostActivity extends AppCompatActivity {
 
     private Button upload;
     private ImageView image;
-    private String imageContentURI;
+    private ArrayList<String> imageContentURI;
 
     private int scaleWidth;
     private int scaleHeight;
@@ -73,11 +75,12 @@ public class NewPostActivity extends AppCompatActivity {
     private ImageButton map;
 
 
+    private LinearLayout linearMain;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
-
+        imageContentURI =new ArrayList<String>();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -124,7 +127,7 @@ public class NewPostActivity extends AppCompatActivity {
         upload = (Button) findViewById(R.id.upload);
         location = (EditText) findViewById(R.id.location);
 
-        image = (ImageView) findViewById(R.id.image);
+        linearMain = (LinearLayout) findViewById(R.id.linearMain);
         map = (ImageButton) findViewById(R.id.map);
 
     }
@@ -216,12 +219,18 @@ public class NewPostActivity extends AppCompatActivity {
         });
     }
     private void addPost() {
+        String imagePath = "";
+        for (String path : imageContentURI)
+        {
+            imagePath += path +",";
+        }
+        imagePath = imagePath.substring(0,imagePath.length()-1);
         // Create a new map of values, where column names are the keys
         values = new ContentValues();
         values.put(Posts.PostEntry.COLUMN_NAME_TITLE, titleText.getText().toString());
         values.put(Posts.PostEntry.COLUMN_NAME_DESCRIPTION, descText.getText().toString());
         values.put(Posts.PostEntry.COLUMN_NAME_PRICE, priceText.getText().toString());
-        values.put(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT, imageContentURI);
+        values.put(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT, imagePath);
         values.put(Posts.PostEntry.COLUMN_NAME_LOCATION, location.getText().toString());
 
         // Insert the new row, returning the primary key value of the new row
@@ -253,8 +262,10 @@ public class NewPostActivity extends AppCompatActivity {
     //Activity has completely loaded
     public void onWindowFocusChanged(boolean hasFocus){
         super.onWindowFocusChanged(hasFocus);
-        scaleWidth=image.getWidth();
-        scaleHeight=image.getHeight();
+        if(image!=null) {
+            scaleWidth = image.getWidth();
+            scaleHeight = image.getHeight();
+        }
     }
 
 
@@ -284,10 +295,15 @@ public class NewPostActivity extends AppCompatActivity {
                 String path=data.getStringExtra("image");
                 File imgFile = new File(path);
                 if(imgFile.exists()){
+                    if(scaleWidth==0)
+                        scaleWidth=300;
+                    if(scaleHeight==0)
+                        scaleHeight=400;
                     Bitmap myBitmap = Utils.decodeSampledBitmapFromResource(path,scaleWidth,scaleHeight);
                     //ImageView myImage = (ImageView) findViewById(R.id.imageviewTest);
-                    imageContentURI =path;
-                    image.setImageBitmap(myBitmap);
+                    imageContentURI.add(path);
+                    //image.setImageBitmap(myBitmap);
+                    setUploadImageView(myBitmap);
                 }
                 break;
             case PICK_IMAGE_REQUEST:
@@ -324,14 +340,20 @@ public class NewPostActivity extends AppCompatActivity {
                 Uri uri = data.getData();
 
                 try {
+                    if(scaleWidth==0)
+                        scaleWidth=300;
+                    if(scaleHeight==0)
+                        scaleHeight=400;
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                     bitmap = Utils.decodeSampledBitmapFromResource(realPath,scaleWidth,scaleHeight);
                     // Log.d(TAG, String.valueOf(bitmap));
 
                     //ImageView imageView = (ImageView) findViewById(R.id.imageView);
                     Log.e(TAG,uri.toString());
-                    imageContentURI =realPath;
-                    image.setImageBitmap(bitmap);
+                    imageContentURI.add(realPath);
+                    setUploadImageView(bitmap);
+                    //image.setImageBitmap(bitmap);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -388,5 +410,18 @@ public class NewPostActivity extends AppCompatActivity {
         builderSingle.show();
     }
 
+    private void setUploadImageView(Bitmap bitmap)
+    {
+        image = new ImageView(getApplicationContext());
+        LinearLayout.LayoutParams layoutParams =
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+        image.setLayoutParams(layoutParams);
+        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        image.setPadding(0, 0, 0, 10);
+        image.setAdjustViewBounds(true);
+        image.setImageBitmap(bitmap);
+        linearMain.addView(image);
+    }
 
 }

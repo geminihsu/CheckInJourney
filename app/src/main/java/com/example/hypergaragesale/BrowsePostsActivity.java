@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -138,9 +139,16 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_DESCRIPTION)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_LOCATION)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT)),View.GONE);
-                String path= cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT));
 
-                pic=decodeSampledBitmapFromResource(path,100, 100);
+                String path= cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT));
+                String indexImage ="";
+                String[] imageArray = path.split(",");
+                for(String imagePath : imageArray)
+                {
+                    Log.e("BrowsePost",imagePath);
+                    indexImage = imagePath;
+                }
+                pic=decodeSampledBitmapFromResource(indexImage,100, 100);
                 post.mBitmap = pic;
                 browsePosts.add(post);
                 i++;

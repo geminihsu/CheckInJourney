@@ -20,7 +20,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.util.Utils;
@@ -54,6 +56,8 @@ public class PostInfoActivity extends AppCompatActivity {
     private TextView titleText;
     private TextView descText;
     private TextView priceText;
+
+    private LinearLayout linearLayout;
 
     private int scaleWidth;
     private int scaleHeight;
@@ -98,7 +102,6 @@ public class PostInfoActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         this.findViews();
-        findViews();
         setLister();
 
 
@@ -120,7 +123,7 @@ public class PostInfoActivity extends AppCompatActivity {
         descText.setText(description);
         priceText = (TextView)findViewById(R.id.textView_price);
         priceText.setText(price);
-
+        linearLayout = (LinearLayout) findViewById(R.id.linearMain);
         // Gets to GoogleMap from the MapView and does initialization stuff
         googleMap = mMapView.getMap();
         if(!runtime_permissions())
@@ -137,7 +140,7 @@ public class PostInfoActivity extends AppCompatActivity {
             setMapView(locations.get(0).getLongitude(),locations.get(0).getLatitude());
         }
 
-        image = (ImageView) findViewById(R.id.image);
+        /*image = (ImageView) findViewById(R.id.image);
         try {
             Bitmap   bitmap = Utils.decodeSampledBitmapFromResource(picture_path,300,400);
             // Log.d(TAG, String.valueOf(bitmap));
@@ -147,6 +150,16 @@ public class PostInfoActivity extends AppCompatActivity {
             image.setImageBitmap(bitmap);
         } catch (Exception e) {
             e.printStackTrace();
+        }*/
+        String[] images = picture_path.split(",");
+        if(images.length>0)
+        {
+            for (String path : images)
+            {
+                Bitmap   bitmap = Utils.decodeSampledBitmapFromResource(path,300,400);
+                setUploadImageView(bitmap);
+            }
+
         }
 
     }
@@ -154,6 +167,7 @@ public class PostInfoActivity extends AppCompatActivity {
     {
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -259,7 +273,7 @@ public class PostInfoActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == 100){
-            if( grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+           // if( grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
                 Geocoder fwdGeocoder = new Geocoder(this, Locale.US);
 
                 String streetAddress = location;
@@ -273,7 +287,22 @@ public class PostInfoActivity extends AppCompatActivity {
 
             }else {
                 runtime_permissions();
-            }
+           // }
         }
+    }
+
+    private void setUploadImageView(Bitmap bitmap)
+    {
+        image= new ImageView(getApplicationContext());
+        LinearLayout.LayoutParams layoutParams =
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+        image.setLayoutParams(layoutParams);
+        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        image.setPadding(0, 0, 0, 10);
+        image.setAdjustViewBounds(true);
+        image.setImageBitmap(bitmap);
+
+        linearLayout.addView(image);
     }
 }
