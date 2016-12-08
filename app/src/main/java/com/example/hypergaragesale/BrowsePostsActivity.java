@@ -1,5 +1,7 @@
 package com.example.hypergaragesale;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -17,11 +19,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
+import android.support.v7.widget.SearchView;
 
 import static com.example.util.Utils.decodeSampledBitmapFromResource;
 
@@ -94,6 +102,8 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
             }
         }));
 
+        handleIntent(getIntent());
+
     }
 
     @Override
@@ -163,4 +173,82 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
     public void onItemClick(BrowsePosts item) {
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search:
+                onSearchRequested();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            data.clear();
+            data=searchDictionaryWords(query);
+            //mAdapter.notifyDataSetChanged();
+            mAdapter = new PostsAdapter(data,this);
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+
+        }
+    }
+
+
+    public ArrayList<BrowsePosts> searchDictionaryWords(String searchWord){
+        ArrayList<BrowsePosts> mItems = new ArrayList<BrowsePosts>();
+        String query = "Select * from "+ Posts.PostEntry.TABLE_NAME+" where "+Posts.PostEntry.COLUMN_NAME_TITLE+" like " + "'%" + searchWord + "%'";
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<String> wordTerms = new ArrayList<String>();
+        Bitmap pic = BitmapFactory.decodeResource(getResources(),
+                R.mipmap.ic_launcher);
+
+        if(cursor.moveToFirst()){
+            do{
+                int id = cursor.getInt(0);
+                BrowsePosts post = new BrowsePosts(String.valueOf(id+"."),
+                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PRICE)),
+                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_DESCRIPTION)),
+                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_LOCATION)),
+                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT)),View.GONE);
+                int checkBox_visibility = View.GONE;
+                String path= cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT));
+                String indexImage ="";
+                String[] imageArray = path.split(",");
+                for(String imagePath : imageArray)
+                {
+                    Log.e("BrowsePost",imagePath);
+                    indexImage = imagePath;
+                }
+                pic=decodeSampledBitmapFromResource(indexImage,100, 100);
+                post.mBitmap = pic;
+
+                mItems.add(post);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return mItems;
+    }
+
 }

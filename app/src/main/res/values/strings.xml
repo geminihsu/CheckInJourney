@@ -19,4 +19,8 @@
     <string name="price_txt">Item Price : </string>
     <string name="desc_txt">Item Description : </string>
 
+    <string name="search_title">Search </string>
+    <string name="app_label"> Search Feature</string>
+    <string name="search_hint">Search Fruit</string>
+    <string name="search_view">Enter search</string>
 </resources>
