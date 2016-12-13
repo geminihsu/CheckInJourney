@@ -93,6 +93,7 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
                 //b.putSerializable(PostInfoActivity.ARG_POST_DATA,item);
                 b.putString(PostInfoActivity.ARG_POST_TITLE,item.mTitle);
                 b.putString(PostInfoActivity.ARG_POST_PRICE,item.mPrice);
+                b.putString(PostInfoActivity.ARG_POST_MOOD,item.mMoodRating);
                 b.putString(PostInfoActivity.ARG_POST_DESCRIPTION,item.mDescription);
                 b.putString(PostInfoActivity.ARG_POST_IMAGE_PATH,item.mPictureContent);
                 b.putString(PostInfoActivity.ARG_POST_LOCATION,item.mAddress);
@@ -119,6 +120,7 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
         String[] projection = {
                 Posts.PostEntry.COLUMN_NAME_TITLE,
                 Posts.PostEntry.COLUMN_NAME_PRICE,
+                Posts.PostEntry.COLUMN_NAME_MOOD_RATE,
                 Posts.PostEntry.COLUMN_NAME_DESCRIPTION,
                 Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT,
                 Posts.PostEntry.COLUMN_NAME_LOCATION
@@ -146,6 +148,7 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
                 BrowsePosts post = new BrowsePosts(String.valueOf(i+"."),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_TITLE)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PRICE)),
+                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_MOOD_RATE)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_DESCRIPTION)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_LOCATION)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT)),View.GONE);
@@ -229,6 +232,7 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
                 BrowsePosts post = new BrowsePosts(String.valueOf(id+"."),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_TITLE)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PRICE)),
+                        cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_MOOD_RATE)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_DESCRIPTION)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_LOCATION)),
                         cursor.getString(cursor.getColumnIndex(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT)),View.GONE);

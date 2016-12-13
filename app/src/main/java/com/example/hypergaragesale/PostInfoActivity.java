@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.util.Utils;
@@ -47,24 +48,27 @@ public class PostInfoActivity extends AppCompatActivity {
 
     public final static String ARG_POST_TITLE = "title";
     public final static String ARG_POST_PRICE = "price";
+    public final static String ARG_POST_MOOD = "mood";
     public final static String ARG_POST_DESCRIPTION  = "description";
     public final static String ARG_POST_IMAGE_PATH  = "image_path";
     public final static String ARG_POST_LOCATION  = "location";
     public final static String ARG_POST_DATA  = "post";
 
-    String title,price,description,picture_path,location;
+    String title,price,mood,description,picture_path,location;
     private TextView titleText;
     private TextView descText;
     private TextView priceText;
 
+    private RatingBar ratingBar;
+
     private LinearLayout linearLayout;
 
-    private int scaleWidth;
+      private int scaleWidth;
     private int scaleHeight;
 
 
     private ImageView image;
-    private String imageContentURI;
+
 
     protected MapView mMapView;
 
@@ -87,6 +91,7 @@ public class PostInfoActivity extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
         title = bundle.getString(ARG_POST_TITLE);
         price = bundle.getString(ARG_POST_PRICE);
+        mood = bundle.getString(ARG_POST_MOOD);
 
         description = bundle.getString(ARG_POST_DESCRIPTION);
 
@@ -123,6 +128,8 @@ public class PostInfoActivity extends AppCompatActivity {
         descText.setText(description);
         priceText = (TextView)findViewById(R.id.textView_price);
         priceText.setText(price);
+        ratingBar = (RatingBar) findViewById(R.id.ratingbar);
+        ratingBar.setRating(Float.valueOf(mood));
         linearLayout = (LinearLayout) findViewById(R.id.linearMain);
         // Gets to GoogleMap from the MapView and does initialization stuff
         googleMap = mMapView.getMap();

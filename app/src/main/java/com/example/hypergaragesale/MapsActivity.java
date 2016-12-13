@@ -154,6 +154,7 @@ public class MapsActivity extends FragmentActivity implements
         setResult(NewPostActivity.QUERY_GPS,i);
     }
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

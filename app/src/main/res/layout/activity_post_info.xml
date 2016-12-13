@@ -40,7 +40,7 @@
         <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/title_txt"
+                android:text="@string/title_txt"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
                 android:paddingTop="@dimen/activity_vertical_margin"
@@ -48,8 +48,10 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title_hint"
+            android:text="@string/title_hint"
             android:paddingTop="@dimen/activity_vertical_margin"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
             android:id="@+id/textView_title" />
         </LinearLayout>
         <LinearLayout
@@ -60,7 +62,7 @@
         <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/price_txt"
+                android:text="@string/price_txt"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
                 android:paddingTop="@dimen/activity_vertical_margin"
@@ -70,7 +72,29 @@
             android:layout_height="wrap_content"
             android:hint="@string/price_hint"
             android:paddingTop="@dimen/activity_vertical_margin"
+            android:textColor="@color/colorPrimary"
             android:id="@+id/textView_price" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mood_txt"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                />
+            <RatingBar android:id="@+id/ratingbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1.0"
+                style="?android:attr/ratingBarStyleIndicator"
+                ></RatingBar>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -88,7 +112,9 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/desc_hint"
+            android:text="@string/desc_hint"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/default_text_info_sp"
             android:id="@+id/textView_desc"
             />
         </LinearLayout>

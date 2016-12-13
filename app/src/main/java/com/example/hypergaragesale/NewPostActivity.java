@@ -33,6 +33,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.Toast;
 
 import com.example.util.URICovertStringPathUtil;
 import com.example.util.Utils;
@@ -67,14 +69,18 @@ public class NewPostActivity extends AppCompatActivity {
     private EditText priceText;
     private EditText location;
 
+
     private Button upload;
+    private ImageButton map;
     private ImageView image;
+    private RatingBar moodValue;
+
     private ArrayList<String> imageContentURI;
 
     private int scaleWidth;
     private int scaleHeight;
+    private String moodRating;
 
-    private ImageButton map;
 
     private TextToSpeech textToSpeech;
 
@@ -133,6 +139,7 @@ public class NewPostActivity extends AppCompatActivity {
         linearMain = (LinearLayout) findViewById(R.id.linearMain);
         map = (ImageButton) findViewById(R.id.map);
 
+        moodValue = (RatingBar) findViewById(R.id.ratingbar);
 
         textToSpeech=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -229,7 +236,24 @@ public class NewPostActivity extends AppCompatActivity {
 
             }
         });
+
+        moodValue.setOnRatingBarChangeListener(ratingBarOnRatingBarChange);
+
+
+
     }
+
+    private RatingBar.OnRatingBarChangeListener ratingBarOnRatingBarChange
+            = new RatingBar.OnRatingBarChangeListener()
+    {
+        @Override
+        public void onRatingChanged(RatingBar ratingBar, float rating,boolean fromUser)
+        {
+            //Toast.makeText(getApplicationContext(), "rating: " + rating, Toast.LENGTH_LONG).show();
+            moodRating = ""+rating;
+        }
+    };
+
     private void addPost() {
         String imagePath = "";
         for (String path : imageContentURI)
@@ -242,6 +266,7 @@ public class NewPostActivity extends AppCompatActivity {
         values.put(Posts.PostEntry.COLUMN_NAME_TITLE, titleText.getText().toString());
         values.put(Posts.PostEntry.COLUMN_NAME_DESCRIPTION, descText.getText().toString());
         values.put(Posts.PostEntry.COLUMN_NAME_PRICE, priceText.getText().toString());
+        values.put(Posts.PostEntry.COLUMN_NAME_MOOD_RATE, moodRating);
         values.put(Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT, imagePath);
         values.put(Posts.PostEntry.COLUMN_NAME_LOCATION, location.getText().toString());
 

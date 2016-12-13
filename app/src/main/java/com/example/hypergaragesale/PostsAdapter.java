@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public TextView mPrice;
         public TextView mDetail;
         public TextView mAddress;
+        public RatingBar rating;
         public CheckBox mCheck;
         public ViewHolder(View view) {
             super(view);
@@ -41,6 +43,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             number = (TextView) itemView.findViewById(R.id.number);
             mTitle = (TextView) itemView.findViewById(R.id.titleView);
             mPrice = (TextView) itemView.findViewById(R.id.priceView);
+            rating = (RatingBar) itemView.findViewById(R.id.ratingbar);
             mDetail = (TextView) itemView.findViewById(R.id.detail);
             mAddress = (TextView) itemView.findViewById(R.id.address);
             mCheck = (CheckBox) itemView.findViewById(R.id.check);
@@ -87,9 +90,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         //DisplayImage function from ImageLoader Class
         //imageLoader.DisplayImage(mDataset.get(position).mBitmap, holder.picture);
         holder.picture.setImageBitmap(mDataset.get(position).mBitmap);
-        holder.number.setText(mDataset.get(position).mNumber);
+        holder.number.setText(mDataset.get(position).mID);
         holder.mTitle.setText(mDataset.get(position).mTitle);
-        holder.mPrice.setText(mDataset.get(position).mPrice);
+        holder.mPrice.setText(" $ "+mDataset.get(position).mPrice);
+        holder.rating.setRating(Float.valueOf(mDataset.get(position).mMoodRating));
         holder.mDetail.setText(mDataset.get(position).mDescription);
         holder.mAddress.setText(mDataset.get(position).mAddress);
         holder.mCheck.setVisibility(mDataset.get(position).checkBox_visibility);

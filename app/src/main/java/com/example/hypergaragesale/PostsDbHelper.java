@@ -20,6 +20,7 @@ public class PostsDbHelper extends SQLiteOpenHelper {
                     Posts.PostEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                     Posts.PostEntry.COLUMN_NAME_PICTURE_CONTENT + TEXT_TYPE + COMMA_SEP +
                     Posts.PostEntry.COLUMN_NAME_PRICE + TEXT_TYPE + COMMA_SEP +
+                    Posts.PostEntry.COLUMN_NAME_MOOD_RATE + TEXT_TYPE + COMMA_SEP +
                     Posts.PostEntry.COLUMN_NAME_LOCATION + TEXT_TYPE +
             " )";
 
