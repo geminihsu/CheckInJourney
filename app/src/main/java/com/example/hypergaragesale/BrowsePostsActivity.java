@@ -251,4 +251,5 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
         return mItems;
     }
 
+
 }

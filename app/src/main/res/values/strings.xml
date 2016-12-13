@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">HyperGarageSale</string>
-    <string name="title_hint">Enter title of the item</string>
-    <string name="price_hint">Enter price</string>
-    <string name="desc_hint">Enter description of the item</string>
+    <string name="app_name">CheckInJourney</string>
+    <string name="title_hint">Journey Topic Title</string>
+    <string name="price_hint">Trip expense</string>
+    <string name="desc_hint">What is on your mind?</string>
     <string name="button_post">Post</string>
+    <string name="button_map">MapView</string>
     <string name="new_post_snackbar">Thanks for posting!</string>
     <string name="title_activity_browse_posts">BrowsePostsActivity</string>
     <string name="add_new_picture">Add Picture</string>
@@ -21,6 +22,6 @@
 
     <string name="search_title">Search </string>
     <string name="app_label"> Search Feature</string>
-    <string name="search_hint">Search Fruit</string>
+    <string name="search_hint">Search title</string>
     <string name="search_view">Enter search</string>
 </resources>

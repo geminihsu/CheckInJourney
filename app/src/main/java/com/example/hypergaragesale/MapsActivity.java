@@ -40,8 +40,7 @@ public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnMarkerDragListener,
-        GoogleMap.OnMapLongClickListener,
-        View.OnClickListener{
+        GoogleMap.OnMapLongClickListener{
     //Our Map
     private GoogleMap mMap;
 
@@ -49,10 +48,6 @@ public class MapsActivity extends FragmentActivity implements
     private double longitude;
     private double latitude;
 
-    //Buttons
-    private ImageButton buttonSave;
-    private ImageButton buttonCurrent;
-    private ImageButton buttonView;
 
     //Google ApiClient
     private GoogleApiClient googleApiClient;
@@ -76,14 +71,7 @@ public class MapsActivity extends FragmentActivity implements
                 .addApi(LocationServices.API)
                 .build();
 
-        //Initializing views and adding onclick listeners
-        buttonSave = (ImageButton) findViewById(R.id.buttonSave);
-        buttonCurrent = (ImageButton) findViewById(R.id.buttonCurrent);
-        buttonView = (ImageButton) findViewById(R.id.buttonView);
-        buttonSave.setOnClickListener(this);
-        buttonCurrent.setOnClickListener(this);
-        buttonView.setOnClickListener(this);
-        if(!runtime_permissions())
+         if(!runtime_permissions())
         {
             getCurrentLocation();
         }
@@ -222,13 +210,7 @@ public class MapsActivity extends FragmentActivity implements
         moveMap();
     }
 
-    @Override
-    public void onClick(View v) {
-        if(v == buttonCurrent){
-            getCurrentLocation();
-            moveMap();
-        }
-    }
+
 
     private boolean runtime_permissions() {
         if(Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){

@@ -16,6 +16,7 @@ import android.location.Address;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 public class NewPostActivity extends AppCompatActivity {
@@ -74,6 +76,7 @@ public class NewPostActivity extends AppCompatActivity {
 
     private ImageButton map;
 
+    private TextToSpeech textToSpeech;
 
     private LinearLayout linearMain;
     @Override
@@ -96,7 +99,7 @@ public class NewPostActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         this.findViews();
-        findViews();
+        //findViews();
         setLister();
 
         // Gets the data repository in write mode
@@ -130,6 +133,15 @@ public class NewPostActivity extends AppCompatActivity {
         linearMain = (LinearLayout) findViewById(R.id.linearMain);
         map = (ImageButton) findViewById(R.id.map);
 
+
+        textToSpeech=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    textToSpeech.setLanguage(Locale.US);
+                }
+            }
+        });
     }
     private void setLister() {
         upload.setOnClickListener(new View.OnClickListener() {
@@ -254,7 +266,7 @@ public class NewPostActivity extends AppCompatActivity {
         //startActivity(new Intent(this, BrowsePostsActivity.class));
         Intent question = new Intent(NewPostActivity.this, BrowsePostsActivity.class);
         startActivity(question);
-        finish();
+        //finish();
     }
 
     @Override
@@ -280,6 +292,7 @@ public class NewPostActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_new_post) {
             showSnackBar(null);
+            textToSpeech.speak("Thank You"+titleText.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
             addPost();
         }
         return super.onOptionsItemSelected(item);
@@ -424,4 +437,12 @@ public class NewPostActivity extends AppCompatActivity {
         linearMain.addView(image);
     }
 
+    //這邊若是加上不會說話
+   /* public void onPause(){
+        if(textToSpeech !=null){
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+        super.onPause();
+    }*/
 }
