@@ -215,10 +215,7 @@ public class NewPostActivity extends AppCompatActivity {
                                         // Always show the chooser (if there are multiple options available)
                                         startActivityForResult(Intent.createChooser(gallery, "Select Picture"), PICK_IMAGE_REQUEST);
                                         break;
-                                 /*   case 2:
-                                        Intent question = new Intent(NewPostActivity.this, YoutubeActivity.class);
-                                        startActivity(question);
-                                        break;*/
+
                                 }
                             }
                         });

@@ -43,10 +43,6 @@
         <activity
             android:name=".CameraActivity"
             android:configChanges="orientation|screenSize" />
-        <!--<activity-->
-            <!--android:name=".YoutubeActivity"-->
-            <!--android:configChanges="orientation|screenSize" />-->
-        <!--&gt;-->
 
         <activity
             android:name=".PostInfoActivity"
