@@ -6,6 +6,15 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+/**
+ *
+ */
+/********************************************************************************
+ * CLASS NAME: SimpleDividerItemDecoration
+ * PURPOSE: This class display RecyclerView separate each item lines
+ 
+ *******************************************************************************/
+
 public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
 

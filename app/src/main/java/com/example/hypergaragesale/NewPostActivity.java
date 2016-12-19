@@ -34,18 +34,23 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.Toast;
 
 import com.example.util.URICovertStringPathUtil;
-import com.example.util.Utils;
+import com.example.util.ImageUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-
-
+/*********************************************************************
+ * CLASS NAME: NewPostActivity
+ * PURPOSE:This activity provide user to add new journey information
+ *
+ * MEMBER FUNCTIONS:
+ * void addPost();
+ * void showAddressList(ArrayList<Address> address);
+ * void setUploadImageView(Bitmap bitmap);
+ **********************************************************************/
 public class NewPostActivity extends AppCompatActivity {
     private String TAG = NewPostActivity.class.toString();
     private static final int CAMERA=1;
@@ -71,7 +76,7 @@ public class NewPostActivity extends AppCompatActivity {
 
 
     private Button upload;
-    private ImageButton map;
+    private ImageButton imageButtonMap;
     private ImageView image;
     private RatingBar moodValue;
 
@@ -124,9 +129,7 @@ public class NewPostActivity extends AppCompatActivity {
         }
     }
 
-//    public void newPostAdded(View v) {
-//        addPost();
-//    }
+
 
     private void findViews()
     {
@@ -137,10 +140,11 @@ public class NewPostActivity extends AppCompatActivity {
         location = (EditText) findViewById(R.id.location);
 
         linearMain = (LinearLayout) findViewById(R.id.linearMain);
-        map = (ImageButton) findViewById(R.id.map);
+        imageButtonMap = (ImageButton) findViewById(R.id.map);
 
         moodValue = (RatingBar) findViewById(R.id.ratingbar);
 
+        //initializer TTS component
         textToSpeech=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -223,7 +227,7 @@ public class NewPostActivity extends AppCompatActivity {
             }
         });
 
-        map.setOnClickListener(new View.OnClickListener() {
+        imageButtonMap.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -240,6 +244,7 @@ public class NewPostActivity extends AppCompatActivity {
 
     }
 
+    //this callback for user mood ratings
     private RatingBar.OnRatingBarChangeListener ratingBarOnRatingBarChange
             = new RatingBar.OnRatingBarChangeListener()
     {
@@ -251,6 +256,10 @@ public class NewPostActivity extends AppCompatActivity {
         }
     };
 
+    /*********************************************************************
+     * FUNCTION: addPost
+     * PURPOSE: mapping new item insert to database
+     **********************************************************************/
     private void addPost() {
         String imagePath = "";
         for (String path : imageContentURI)
@@ -274,18 +283,8 @@ public class NewPostActivity extends AppCompatActivity {
                 null,
                 values);
 
-        /*ContentValues values = new ContentValues();
-        values.put(ItemProvider.TITLE, titleText.getText().toString());
-
-        values.put(ItemProvider.PRICE, descText.getText().toString());
-        values.put(ItemProvider.DESCRIPTION, priceText.getText().toString());
-        values.put(ItemProvider.IMAGE_CONTENT, imageContentURI);
 
 
-        Uri uri = getContentResolver().insert(
-                ItemProvider.CONTENT_URI, values);
-*/
-        //startActivity(new Intent(this, BrowsePostsActivity.class));
         Intent question = new Intent(NewPostActivity.this, BrowsePostsActivity.class);
         startActivity(question);
         //finish();
@@ -334,7 +333,7 @@ public class NewPostActivity extends AppCompatActivity {
                         scaleWidth=300;
                     if(scaleHeight==0)
                         scaleHeight=400;
-                    Bitmap myBitmap = Utils.decodeSampledBitmapFromResource(path,scaleWidth,scaleHeight);
+                    Bitmap myBitmap = ImageUtils.decodeSampledBitmapFromResource(path,scaleWidth,scaleHeight);
                     //ImageView myImage = (ImageView) findViewById(R.id.imageviewTest);
                     imageContentURI.add(path);
                     //image.setImageBitmap(myBitmap);
@@ -380,7 +379,7 @@ public class NewPostActivity extends AppCompatActivity {
                     if(scaleHeight==0)
                         scaleHeight=400;
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                    bitmap = Utils.decodeSampledBitmapFromResource(realPath,scaleWidth,scaleHeight);
+                    bitmap = ImageUtils.decodeSampledBitmapFromResource(realPath,scaleWidth,scaleHeight);
                     // Log.d(TAG, String.valueOf(bitmap));
 
                     //ImageView imageView = (ImageView) findViewById(R.id.imageView);
@@ -406,6 +405,12 @@ public class NewPostActivity extends AppCompatActivity {
 
     }
 
+    /*********************************************************************
+     * FUNCTION: showAddressList
+     * PURPOSE: get Address from Google map and show the address list on the Dialog
+     *
+     * PARAMETERS: ArrayList<Address> address
+     **********************************************************************/
     private void showAddressList(ArrayList<Address> address)
     {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(NewPostActivity.this);
@@ -445,6 +450,13 @@ public class NewPostActivity extends AppCompatActivity {
         builderSingle.show();
     }
 
+
+    /*********************************************************************
+     * FUNCTION: setUploadImageView
+     * PURPOSE: automatically generate more than one image view for Bitmap
+     *
+     * PARAMETERS: Bitmap bitmap
+     **********************************************************************/
     private void setUploadImageView(Bitmap bitmap)
     {
         image = new ImageView(getApplicationContext());
@@ -459,12 +471,5 @@ public class NewPostActivity extends AppCompatActivity {
         linearMain.addView(image);
     }
 
-    //這邊若是加上不會說話
-   /* public void onPause(){
-        if(textToSpeech !=null){
-            textToSpeech.stop();
-            textToSpeech.shutdown();
-        }
-        super.onPause();
-    }*/
+
 }

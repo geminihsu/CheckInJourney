@@ -35,6 +35,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/*********************************************************************
+ * CLASS NAME: MapsActivity
+ * PURPOSE: Activity displaying a fragment that implements Google Map
+ *
+ * MEMBER FUNCTIONS:
+ * void moveMap();
+ * INTERFACE FUNCTIONS:
+ * OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,
+ * GoogleApiClient.OnConnectionFailedListener,GoogleMap.OnMarkerDragListener,
+ * GoogleMap.OnMapLongClickListener
+ **********************************************************************/
+
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -89,7 +101,10 @@ public class MapsActivity extends FragmentActivity implements
         super.onStop();
     }
 
-    //Getting current location
+    /*********************************************************************
+     * FUNCTION: getCurrentLocation
+     * PURPOSE: Getting user current location
+     **********************************************************************/
     private void getCurrentLocation() {
         if(mMap!=null)
         mMap.clear();
@@ -116,7 +131,11 @@ public class MapsActivity extends FragmentActivity implements
 
     }
 
-    //Function to move the map
+    /*********************************************************************
+     * FUNCTION: moveMap
+     * PURPOSE: By Google Map object, it will return location information,
+     *          the address will return to NewPostActivity for displaying marker
+     **********************************************************************/
     private void moveMap() {
         //String to display current latitude and longitude
         String msg = latitude + ", "+longitude;

@@ -2,7 +2,6 @@ package com.example.hypergaragesale;
 
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -19,21 +18,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.example.util.Utils;
-import com.google.android.gms.maps.CameraUpdate;
+import com.example.util.ImageUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -42,7 +37,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-
+/*********************************************************************
+ * CLASS NAME: PostInfoActivity
+ * PURPOSE:This activity display each journey information contains map location
+ *
+ * MEMBER FUNCTIONS: *
+ * void setMapView(double longitude,double latitude);
+ * void setUploadImageView(Bitmap bitmap);
+ **********************************************************************/
 public class PostInfoActivity extends AppCompatActivity {
     private String TAG = PostInfoActivity.class.toString();
 
@@ -54,7 +56,7 @@ public class PostInfoActivity extends AppCompatActivity {
     public final static String ARG_POST_LOCATION  = "location";
     public final static String ARG_POST_DATA  = "post";
 
-    String title,price,mood,description,picture_path,location;
+    private String title,price,mood,description,picture_path,location;
     private TextView titleText;
     private TextView descText;
     private TextView priceText;
@@ -107,7 +109,7 @@ public class PostInfoActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         this.findViews();
-        setLister();
+
 
 
     }
@@ -147,34 +149,19 @@ public class PostInfoActivity extends AppCompatActivity {
             setMapView(locations.get(0).getLongitude(),locations.get(0).getLatitude());
         }
 
-        /*image = (ImageView) findViewById(R.id.image);
-        try {
-            Bitmap   bitmap = Utils.decodeSampledBitmapFromResource(picture_path,300,400);
-            // Log.d(TAG, String.valueOf(bitmap));
 
-            //ImageView imageView = (ImageView) findViewById(R.id.imageView);
-           // Log.e(TAG,uri.toString());
-            image.setImageBitmap(bitmap);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
         String[] images = picture_path.split(",");
         if(images.length>0)
         {
             for (String path : images)
             {
-                Bitmap   bitmap = Utils.decodeSampledBitmapFromResource(path,300,400);
+                Bitmap   bitmap = ImageUtils.decodeSampledBitmapFromResource(path,300,400);
                 setUploadImageView(bitmap);
             }
 
         }
 
     }
-    private void setLister()
-    {
-
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -240,6 +227,12 @@ public class PostInfoActivity extends AppCompatActivity {
         }
         return false;
     }
+    /*********************************************************************
+     * FUNCTION: setMapView
+     * PURPOSE: display marker on the google map view
+     *
+     * PARAMETERS: double longitude,double latitude
+     **********************************************************************/
     public void setMapView(double longitude,double latitude) {
         if (mMapView != null) {
 
@@ -276,6 +269,14 @@ public class PostInfoActivity extends AppCompatActivity {
         }
     }
 
+
+    /*********************************************************************
+     * FUNCTION: onRequestPermissionsResult
+     * PURPOSE: ask user for permission to access location and reverses address
+     * mapping gps location
+     *
+     * PARAMETERS: int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults
+     **********************************************************************/
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -298,6 +299,12 @@ public class PostInfoActivity extends AppCompatActivity {
         }
     }
 
+    /*********************************************************************
+     * FUNCTION: setUploadImageView
+     * PURPOSE: automatically generate more than one image view for Bitmap
+     *
+     * PARAMETERS: Bitmap bitmap
+     **********************************************************************/
     private void setUploadImageView(Bitmap bitmap)
     {
         image= new ImageView(getApplicationContext());

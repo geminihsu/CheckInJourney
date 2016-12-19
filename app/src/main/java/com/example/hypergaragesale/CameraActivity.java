@@ -23,9 +23,11 @@ import android.support.v4.app.FragmentActivity;
 
 import com.example.camera2raw.Camera2RawFragment;
 
-/**
- * Activity displaying a fragment that implements RAW photo captures.
- */
+/*********************************************************************
+ * CLASS NAME: CameraActivity
+ * PURPOSE:Activity displaying a fragment that implements RAW photo captures.
+ ***********************************************************************/
+
 public class CameraActivity extends FragmentActivity {
 
     @Override

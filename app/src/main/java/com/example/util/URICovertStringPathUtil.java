@@ -1,9 +1,5 @@
 package com.example.util;
 
-/**
- * Created by geminihsu on 2016/11/10.
- */
-
     import android.annotation.SuppressLint;
     import android.content.Context;
     import android.content.CursorLoader;
@@ -11,7 +7,10 @@ package com.example.util;
     import android.net.Uri;
     import android.provider.DocumentsContract;
     import android.provider.MediaStore;
-
+    /***********************************************************************************************************
+    * CLASS NAME: URICovertStringPathUtil
+    * PURPOSE: This class covert content url to file absolute path according to different android sdk version
+     * *******************************************************************************/
     public class URICovertStringPathUtil {
 
         @SuppressLint("NewApi")

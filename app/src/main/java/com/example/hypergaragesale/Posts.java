@@ -2,9 +2,12 @@ package com.example.hypergaragesale;
 
 import android.provider.BaseColumns;
 
-/**
- * Created by Taral on 3/11/2016.
- */
+/*********************************************************************
+ * CLASS NAME: Posts
+ * PURPOSE:  This class each final variables mapping our database columns name
+ *
+ **********************************************************************/
+
 public class Posts {
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.

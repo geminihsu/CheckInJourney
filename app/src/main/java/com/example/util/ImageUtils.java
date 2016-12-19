@@ -4,9 +4,20 @@ import android.graphics.BitmapFactory;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-
-public class Utils {
-    //Load a bitmap from a resource with a target size
+/***********************************************************************************************************
+ * CLASS NAME: ImageUtils
+ * PURPOSE: This class optimize bitmap quality
+ *  MEMBER FUNCTIONS:
+ *  static Bitmap decodeSampledBitmapFromResource(String res, int reqWidth, int reqHeight)
+ *  static int calculateInSampleSize( BitmapFactory.Options options, int reqWidth, int reqHeight)
+ * *******************************************************************************/
+public class ImageUtils {
+    /*********************************************************************
+     * FUNCTION: decodeSampledBitmapFromResource
+     * PURPOSE: Load a bitmap from a resource with a target size
+     *
+     * PARAMETERS: String res, int reqWidth, int reqHeight
+     **********************************************************************/
     public static Bitmap decodeSampledBitmapFromResource(String res, int reqWidth, int reqHeight) {
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -18,7 +29,13 @@ public class Utils {
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(res, options);
     }
-    //Given the bitmap size and View size calculate a subsampling size (powers of 2)
+
+    /*********************************************************************
+     * FUNCTION: calculateInSampleSize
+     * PURPOSE: Given the bitmap size and View size calculate a subsampling size (powers of 2)
+     *
+     * PARAMETERS: BitmapFactory.Options options, int reqWidth, int reqHeight
+     **********************************************************************/
     public static int calculateInSampleSize( BitmapFactory.Options options, int reqWidth, int reqHeight) {
         int inSampleSize = 1;	//Default subsampling size
         // See if image raw height and width is bigger than that of required view

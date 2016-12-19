@@ -13,9 +13,14 @@ import java.util.ArrayList;
 
 
 
-/**
- * Created by Taral on 3/11/2016.
- */
+/********************************************************************************
+ * CLASS NAME: PostsAdapter
+ * PURPOSE: This class is controller role to mediates between BrowsePostActivity
+ *          and database, after get the BrowsePosts data list,they will be
+ *          display each journey item on the List view
+ *
+ * INTERFACE: OnItemClickListener used to implement user click item behavior
+ *******************************************************************************/
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
     public interface OnItemClickListener {
         void onItemClick(BrowsePosts item);
@@ -98,14 +103,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         holder.mAddress.setText(mDataset.get(position).mAddress);
         holder.mCheck.setVisibility(mDataset.get(position).checkBox_visibility);
 
-      /*  final BrowsePosts element = mDataset.get(position);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickSubject.onNext(element);
-            }
-        });*/
 }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -113,11 +111,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     public int getItemCount() {
         return mDataset.size();
     }
-
-  /*  public Observable<BrowsePosts> getPositionClicks(){
-        return onClickSubject.asObservable();
-    }*/
-
 
 
 

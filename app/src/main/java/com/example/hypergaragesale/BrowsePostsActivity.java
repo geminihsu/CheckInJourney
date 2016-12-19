@@ -3,7 +3,6 @@ package com.example.hypergaragesale;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -11,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,16 +21,33 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.support.v7.widget.SearchView;
 
-import static com.example.util.Utils.decodeSampledBitmapFromResource;
-
+import static com.example.util.ImageUtils.decodeSampledBitmapFromResource;
+//
+//
+//
+//
+//  Created by Gemini Hsu on 2016/11/03.
+//  Copyright © 2016年 Gemini Hsu. All rights reserved.
+//  Compiler IDE is Android Studio(Version 2.2.2).
+//  Operaton System is MacOS Sierra v10.12
+//
+//
+/*********************************************************************
+ * CLASS NAME: BrowsePostsActivity *
+ * PURPOSE:This activity display each journey information on the list view
+ *
+ * MEMBER FUNCTIONS:
+ * ArrayList<BrowsePosts> getDataSet();
+ * void handleIntent(Intent intent);
+ * ArrayList<BrowsePosts> searchDictionaryWords(String searchWord);
+ * INTERFACE FUNCTIONS:
+ * PostsAdapter.OnItemClickListener
+ **********************************************************************/
 
 public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapter.OnItemClickListener {
 
@@ -114,6 +129,7 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
         mAdapter.notifyDataSetChanged();
     }
 
+    //query all data from database and each data will be return to arraylist
     private ArrayList<BrowsePosts> getDataSet() {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
@@ -204,6 +220,13 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
         setIntent(intent);
         handleIntent(intent);
     }
+
+    /*********************************************************************
+     * FUNCTION: handleIntent
+     * PURPOSE: after user enter search keyword the function will be call
+     *
+     * PARAMETERS: Intent intent
+     **********************************************************************/
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -218,7 +241,13 @@ public class BrowsePostsActivity extends AppCompatActivity implements PostsAdapt
     }
 
 
-    public ArrayList<BrowsePosts> searchDictionaryWords(String searchWord){
+    /*********************************************************************
+     * FUNCTION: searchDictionaryWords
+     * PURPOSE: the method will search database with @searchWord keyword use query command
+     *
+     * PARAMETERS: searchWord
+     **********************************************************************/
+    private ArrayList<BrowsePosts> searchDictionaryWords(String searchWord){
         ArrayList<BrowsePosts> mItems = new ArrayList<BrowsePosts>();
         String query = "Select * from "+ Posts.PostEntry.TABLE_NAME+" where "+Posts.PostEntry.COLUMN_NAME_TITLE+" like " + "'%" + searchWord + "%'";
         Cursor cursor = db.rawQuery(query, null);

@@ -107,17 +107,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  * When the pre-capture sequence has finished, a {@link CaptureRequest} with a monotonically
  * increasing request ID set by calls to {@link CaptureRequest.Builder#setTag(Object)} is sent to
  * the camera to begin the JPEG and RAW capture sequence, and an
- * {@link ImageSaver.ImageSaverBuilder} is stored for this request in the
+ * {@link ImageSaverBuilder} is stored for this request in the
  * {@link #mJpegResultQueue} and {@link #mRawResultQueue}.
  * </li>
  * <li>
  * As {@link CaptureResult}s and {@link Image}s become available via callbacks in a background
- * thread, a {@link ImageSaver.ImageSaverBuilder} is looked up by the request ID in
+ * thread, a {@link ImageSaverBuilder} is looked up by the request ID in
  * {@link #mJpegResultQueue} and {@link #mRawResultQueue} and updated.
  * </li>
  * <li>
  * When all of the necessary results to save an image are available, the an {@link ImageSaver} is
- * constructed by the {@link ImageSaver.ImageSaverBuilder} and passed to a separate background
+ * constructed by the {@link ImageSaverBuilder} and passed to a separate background
  * thread to save to a file.
  * </li>
  * </ul>
@@ -323,14 +323,14 @@ public class Camera2RawFragment extends Fragment
     private int mPendingUserCaptures = 0;
 
     /**
-     * Request ID to {@link ImageSaver.ImageSaverBuilder} mapping for in-progress JPEG captures.
+     * Request ID to {@link ImageSaverBuilder} mapping for in-progress JPEG captures.
      */
-    private final TreeMap<Integer, ImageSaver.ImageSaverBuilder> mJpegResultQueue = new TreeMap<>();
+    private final TreeMap<Integer, ImageSaverBuilder> mJpegResultQueue = new TreeMap<>();
 
     /**
-     * Request ID to {@link ImageSaver.ImageSaverBuilder} mapping for in-progress RAW captures.
+     * Request ID to {@link ImageSaverBuilder} mapping for in-progress RAW captures.
      */
-    private final TreeMap<Integer, ImageSaver.ImageSaverBuilder> mRawResultQueue = new TreeMap<>();
+    private final TreeMap<Integer, ImageSaverBuilder> mRawResultQueue = new TreeMap<>();
 
     /**
      * {@link CaptureRequest.Builder} for the camera preview
@@ -526,8 +526,8 @@ public class Camera2RawFragment extends Fragment
 
             // Look up the ImageSaverBuilder for this request and update it with the file name
             // based on the capture start time.
-            ImageSaver.ImageSaverBuilder jpegBuilder;
-            ImageSaver.ImageSaverBuilder rawBuilder;
+            ImageSaverBuilder jpegBuilder;
+            ImageSaverBuilder rawBuilder;
             int requestId = (int) request.getTag();
             synchronized (mCameraStateLock) {
                 jpegBuilder = mJpegResultQueue.get(requestId);
@@ -542,8 +542,8 @@ public class Camera2RawFragment extends Fragment
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request,
                                        TotalCaptureResult result) {
             int requestId = (int) request.getTag();
-            ImageSaver.ImageSaverBuilder jpegBuilder;
-            ImageSaver.ImageSaverBuilder rawBuilder;
+            ImageSaverBuilder jpegBuilder;
+            ImageSaverBuilder rawBuilder;
             StringBuilder sb = new StringBuilder();
 
             // Look up the ImageSaverBuilder for this request and update it with the CaptureResult
@@ -1239,9 +1239,9 @@ public class Camera2RawFragment extends Fragment
 
             // Create an ImageSaverBuilder in which to collect results, and add it to the queue
             // of active requests.
-            ImageSaver.ImageSaverBuilder jpegBuilder = new ImageSaver.ImageSaverBuilder(activity)
+            ImageSaverBuilder jpegBuilder = new ImageSaverBuilder(activity)
                     .setCharacteristics(mCharacteristics);
-            ImageSaver.ImageSaverBuilder rawBuilder = new ImageSaver.ImageSaverBuilder(activity)
+            ImageSaverBuilder rawBuilder = new ImageSaverBuilder(activity)
                     .setCharacteristics(mCharacteristics);
 
             mJpegResultQueue.put((int) request.getTag(), jpegBuilder);
@@ -1289,12 +1289,12 @@ public class Camera2RawFragment extends Fragment
      * @param reader       a reference counted wrapper containing an {@link ImageReader} from which
      *                     to acquire an image.
      */
-    private void dequeueAndSaveImage(TreeMap<Integer, ImageSaver.ImageSaverBuilder> pendingQueue,
+    private void dequeueAndSaveImage(TreeMap<Integer, ImageSaverBuilder> pendingQueue,
                                      RefCountedAutoCloseable<ImageReader> reader) {
         synchronized (mCameraStateLock) {
-            Map.Entry<Integer, ImageSaver.ImageSaverBuilder> entry =
+            Map.Entry<Integer, ImageSaverBuilder> entry =
                     pendingQueue.firstEntry();
-            ImageSaver.ImageSaverBuilder builder = entry.getValue();
+            ImageSaverBuilder builder = entry.getValue();
 
             // Increment reference count to prevent ImageReader from being closed while we
             // are saving its Images in a background thread (otherwise their resources may
@@ -1325,305 +1325,12 @@ public class Camera2RawFragment extends Fragment
         }
     }
 
-    /**
-     * Runnable that saves an {@link Image} into the specified {@link File}, and updates
-     * {@link android.provider.MediaStore} to include the resulting file.
-     * <p/>
-     * This can be constructed through an {@link ImageSaverBuilder} as the necessary image and
-     * result information becomes available.
-     */
-    private static class ImageSaver implements Runnable {
 
-        /**
-         * The image to save.
-         */
-        private final Image mImage;
-        /**
-         * The file we save the image into.
-         */
-        private final File mFile;
 
-        /**
-         * The CaptureResult for this image capture.
-         */
-        private final CaptureResult mCaptureResult;
 
-        /**
-         * The CameraCharacteristics for this camera device.
-         */
-        private final CameraCharacteristics mCharacteristics;
 
-        /**
-         * The Context to use when updating MediaStore with the saved images.
-         */
-        private final Context mContext;
 
-        /**
-         * A reference counted wrapper for the ImageReader that owns the given image.
-         */
-        private final RefCountedAutoCloseable<ImageReader> mReader;
 
-        private ImageSaver(Image image, File file, CaptureResult result,
-                           CameraCharacteristics characteristics, Context context,
-                           RefCountedAutoCloseable<ImageReader> reader) {
-            mImage = image;
-            mFile = file;
-            mCaptureResult = result;
-            mCharacteristics = characteristics;
-            mContext = context;
-            mReader = reader;
-        }
-
-        @Override
-        public void run() {
-            boolean success = false;
-            int format = mImage.getFormat();
-            switch (format) {
-                case ImageFormat.JPEG: {
-                    ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
-                    byte[] bytes = new byte[buffer.remaining()];
-                    buffer.get(bytes);
-                    FileOutputStream output = null;
-                    try {
-                        output = new FileOutputStream(mFile);
-                        output.write(bytes);
-                        success = true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        mImage.close();
-                        closeOutput(output);
-                    }
-                    break;
-                }
-                case ImageFormat.RAW_SENSOR: {
-                    DngCreator dngCreator = new DngCreator(mCharacteristics, mCaptureResult);
-                    FileOutputStream output = null;
-                    try {
-                        output = new FileOutputStream(mFile);
-                        dngCreator.writeImage(output, mImage);
-                        success = true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        mImage.close();
-                        closeOutput(output);
-                    }
-                    break;
-                }
-                default: {
-                    Log.e(TAG, "Cannot save image, unexpected image format:" + format);
-                    break;
-                }
-            }
-
-            // Decrement reference count to allow ImageReader to be closed to free up resources.
-            mReader.close();
-
-            // If saving the file succeeded, update MediaStore.
-            if (success) {
-                MediaScannerConnection.scanFile(mContext, new String[]{mFile.getPath()},
-                /*mimeTypes*/null, new MediaScannerConnection.MediaScannerConnectionClient() {
-                    @Override
-                    public void onMediaScannerConnected() {
-                        // Do nothing
-                    }
-
-                    @Override
-                    public void onScanCompleted(String path, Uri uri) {
-                        Log.i(TAG, "Scanned " + path + ":");
-                        Log.i(TAG, "-> uri=" + uri);
-                    }
-                });
-            }
-        }
-
-        /**
-         * Builder class for constructing {@link ImageSaver}s.
-         * <p/>
-         * This class is thread safe.
-         */
-        public static class ImageSaverBuilder {
-            private Image mImage;
-            private File mFile;
-            private CaptureResult mCaptureResult;
-            private CameraCharacteristics mCharacteristics;
-            private Context mContext;
-            private RefCountedAutoCloseable<ImageReader> mReader;
-
-            /**
-             * Construct a new ImageSaverBuilder using the given {@link Context}.
-             *
-             * @param context a {@link Context} to for accessing the
-             *                {@link android.provider.MediaStore}.
-             */
-            public ImageSaverBuilder(final Context context) {
-                mContext = context;
-            }
-
-            public synchronized ImageSaverBuilder setRefCountedReader(
-                    RefCountedAutoCloseable<ImageReader> reader) {
-                if (reader == null) throw new NullPointerException();
-
-                mReader = reader;
-                return this;
-            }
-
-            public synchronized ImageSaverBuilder setImage(final Image image) {
-                if (image == null) throw new NullPointerException();
-                mImage = image;
-                return this;
-            }
-
-            public synchronized ImageSaverBuilder setFile(final File file) {
-                if (file == null) throw new NullPointerException();
-                mFile = file;
-                return this;
-            }
-
-            public synchronized ImageSaverBuilder setResult(final CaptureResult result) {
-                if (result == null) throw new NullPointerException();
-                mCaptureResult = result;
-                return this;
-            }
-
-            public synchronized ImageSaverBuilder setCharacteristics(
-                    final CameraCharacteristics characteristics) {
-                if (characteristics == null) throw new NullPointerException();
-                mCharacteristics = characteristics;
-                return this;
-            }
-
-            public synchronized ImageSaver buildIfComplete() {
-                if (!isComplete()) {
-                    return null;
-                }
-                return new ImageSaver(mImage, mFile, mCaptureResult, mCharacteristics, mContext,
-                        mReader);
-            }
-
-            public synchronized String getSaveLocation() {
-                return (mFile == null) ? "Unknown" : mFile.toString();
-            }
-
-            private boolean isComplete() {
-                return mImage != null && mFile != null && mCaptureResult != null
-                        && mCharacteristics != null;
-            }
-        }
-    }
-
-    // Utility classes and methods:
-    // *********************************************************************************************
-
-    /**
-     * Comparator based on area of the given {@link Size} objects.
-     */
-    static class CompareSizesByArea implements Comparator<Size> {
-
-        @Override
-        public int compare(Size lhs, Size rhs) {
-            // We cast here to ensure the multiplications won't overflow
-            return Long.signum((long) lhs.getWidth() * lhs.getHeight() -
-                    (long) rhs.getWidth() * rhs.getHeight());
-        }
-
-    }
-
-    /**
-     * A dialog fragment for displaying non-recoverable errors; this {@ling Activity} will be
-     * finished once the dialog has been acknowledged by the user.
-     */
-    public static class ErrorDialog extends DialogFragment {
-
-        private String mErrorMessage;
-
-        public ErrorDialog() {
-            mErrorMessage = "Unknown error occurred!";
-        }
-
-        // Build a dialog with a custom message (Fragments require default constructor).
-        public static ErrorDialog buildErrorDialog(String errorMessage) {
-            ErrorDialog dialog = new ErrorDialog();
-            dialog.mErrorMessage = errorMessage;
-            return dialog;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Activity activity = getActivity();
-            return new AlertDialog.Builder(activity)
-                    .setMessage(mErrorMessage)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            activity.finish();
-                        }
-                    })
-                    .create();
-        }
-    }
-
-    /**
-     * A wrapper for an {@link AutoCloseable} object that implements reference counting to allow
-     * for resource management.
-     */
-    public static class RefCountedAutoCloseable<T extends AutoCloseable> implements AutoCloseable {
-        private T mObject;
-        private long mRefCount = 0;
-
-        /**
-         * Wrap the given object.
-         *
-         * @param object an object to wrap.
-         */
-        public RefCountedAutoCloseable(T object) {
-            if (object == null) throw new NullPointerException();
-            mObject = object;
-        }
-
-        /**
-         * Increment the reference count and return the wrapped object.
-         *
-         * @return the wrapped object, or null if the object has been released.
-         */
-        public synchronized T getAndRetain() {
-            if (mRefCount < 0) {
-                return null;
-            }
-            mRefCount++;
-            return mObject;
-        }
-
-        /**
-         * Return the wrapped object.
-         *
-         * @return the wrapped object, or null if the object has been released.
-         */
-        public synchronized T get() {
-            return mObject;
-        }
-
-        /**
-         * Decrement the reference count and release the wrapped object if there are no other
-         * users retaining this object.
-         */
-        @Override
-        public synchronized void close() {
-            if (mRefCount >= 0) {
-                mRefCount--;
-                if (mRefCount < 0) {
-                    try {
-                        mObject.close();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    } finally {
-                        mObject = null;
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * Given {@code choices} of {@code Size}s supported by a camera, choose the smallest one that
@@ -1777,11 +1484,11 @@ public class Camera2RawFragment extends Fragment
      * Call this only with {@link #mCameraStateLock} held.
      *
      * @param requestId the ID of the {@link CaptureRequest} to handle.
-     * @param builder   the {@link ImageSaver.ImageSaverBuilder} for this request.
+     * @param builder   the {@link ImageSaverBuilder} for this request.
      * @param queue     the queue to remove this request from, if completed.
      */
-    private void handleCompletionLocked(int requestId, ImageSaver.ImageSaverBuilder builder,
-                                        TreeMap<Integer, ImageSaver.ImageSaverBuilder> queue) {
+    private void handleCompletionLocked(int requestId, ImageSaverBuilder builder,
+                                        TreeMap<Integer,ImageSaverBuilder> queue) {
         if (builder == null) return;
         ImageSaver saver = builder.buildIfComplete();
         if (saver != null) {
