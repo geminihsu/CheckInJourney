@@ -8,3 +8,20 @@ Operation System: android 
 Min SDK version: 23
 Develop IDE tool: Android Studio 2.2.2
 
+# Architectural Diagram![alt text](https://github.com/geminihsu/CheckInJourney/blob/master/uml/ArchitecturalDiagram.png)
+
+# Domain Diagram
+![alt text](https://github.com/geminihsu/CheckInJourney/blob/master/uml/DomainDiagram.jpg)
+
+
+# Class Diagram
+![alt text](https://github.com/geminihsu/CheckInJourney/blob/master/uml/ClassDiagram.jpg)
+
+
+# Screenshots
+![alt text](https://github.com/geminihsu/CheckInJourney/blob/master/sreenshots/List.png)
+![alt text](https://github.com/geminihsu/CheckInJourney/blob/master/sreenshots/findAddress.png)
+![alt text](https://github.com/geminihsu/CheckInJourney/blob/master/sreenshots/postInfo.png)
+
+
+
